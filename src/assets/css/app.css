@@ -1,0 +1,8 @@
+@import "components/dashboard.css";
+@import "components/sidebar.css";
+@import "components/layout.css";
+@import "components/createuser.css";
+@import "components/usermanagement.css";
+@import "components/positionmanagement.css";
+@import "components/bookingmanagement.css";
+@import "components/certificatemanagement.css";
