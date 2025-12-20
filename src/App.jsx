@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import AdminLogin from './page/Login'
 import Layout from './components/Layout';
-// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import PositionManagement from './components/PositionManagement';
 import DashboardPage from './page/Dashboard';
@@ -14,6 +13,10 @@ import BookingManagement from './page/BookingManagement';
 import InvoiceManagement from './page/InvoicManagement';
 import CertificateManagement from './page/CertificateManagement';
 import SettingsPage from './page/Setting';
+import VerifyEmail from './components/VerifyEmail';
+import ResetPassword from './components/ResetPassword';
+import ForgotPassword from './components/ForgotPassword';
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,6 +27,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<AdminLogin />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/* 2. Protected Admin Routes (Role: 'admin') */}
           <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
@@ -43,6 +47,9 @@ function App() {
               <Route path='/invoice-management' element={<InvoiceManagement />} />
               <Route path='/certificate-management' element={<CertificateManagement />} />
               <Route path='/settings' element={<SettingsPage />} />
+
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
             </Route>
             
           </Route>

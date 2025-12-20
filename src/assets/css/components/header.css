@@ -1,37 +1,42 @@
+/* admin-header styles */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .profile-badge {
   display: flex;
   align-items: center;
-  background: #f0f2f5;
-  padding: 8px 12px;
-  border-radius: 50px;
-  font-weight: 500;
   cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 30px;
   transition: background 0.2s;
 }
 
 .profile-badge:hover {
-  background: #e4e6eb;
+  background-color: #f8f9fa;
 }
 
 .profile-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  object-fit: cover;
-  margin-right: 8px;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  object-fit: cover; /* Prevents image stretching */
 }
 
-.profile-fallback {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #007bff;
-  color: white;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px;
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
 }

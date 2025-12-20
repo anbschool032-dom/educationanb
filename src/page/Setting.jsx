@@ -27,23 +27,48 @@ const SettingsPage = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await api.get('/auth/me');
-        const data = res.data;
-        setProfileData({
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          phone: data.phone || '',
-          previewImage: data.profile_image ? `/uploads/profiles/${data.profile_image}` : null,
-        });
-      } catch (err) {
-        console.error('Failed to load profile:', err);
-      }
-    };
-    fetchProfile();
-  }, []);
+const API_IMG_URL = 'http://localhost:3000'; 
+
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await api.get('/auth/me');
+      const data = res.data;
+      
+      setProfileData({
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        phone: data.phone || '',
+        
+        // 2. COMBINE THEM: Server URL + Folder Path + Filename
+        previewImage: data.profile_image 
+          ? `${API_IMG_URL}/uploads/profiles/${data.profile_image}` 
+          : null, // or a placeholder image URL
+      });
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+    }
+  };
+  fetchProfile();
+}, []);
+
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const res = await api.get('/auth/me');
+  //       const data = res.data;
+  //       setProfileData({
+  //         first_name: data.first_name || '',
+  //         last_name: data.last_name || '',
+  //         phone: data.phone || '',
+  //         previewImage: data.profile_image ? `/uploads/profiles/${data.profile_image}` : null,
+  //       });
+  //     } catch (err) {
+  //       console.error('Failed to load profile:', err);
+  //     }
+  //   };
+  //   fetchProfile();
+  // }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

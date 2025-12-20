@@ -1,4 +1,3 @@
-/* User Management - Modern Clean Design */
 
 .user-management-container {
   padding: 2.5rem;
@@ -290,7 +289,7 @@
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
 }
 
-/* Loading and Empty States */
+
 .user-table-container > p {
   text-align: center;
   padding: 3rem;
@@ -299,7 +298,7 @@
   font-weight: 500;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .user-table {
     font-size: 0.9rem;
@@ -365,5 +364,88 @@
   
   .user-action-btn {
     width: 100%;
+  }
+}
+
+
+/* ... Your existing styles ... */
+
+/* --- Pagination Styles --- */
+.user-pagination-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.rows-per-page select {
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #4a5568;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rows-per-page select:hover {
+  border-color: #cbd5e0;
+}
+
+.user-pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0 !important; /* Override previous margin */
+}
+
+.user-page-btn {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.user-page-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  color: #1a202c;
+  border-color: #cbd5e0;
+}
+
+.user-page-btn.active-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+.user-page-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: #f1f5f9;
+}
+
+/* Mobile Responsiveness for Pagination */
+@media (max-width: 768px) {
+  .user-pagination-footer {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .rows-per-page, .user-pagination {
+    width: 100%;
+    justify-content: center;
   }
 }
