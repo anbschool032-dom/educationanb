@@ -4,13 +4,15 @@
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import '../assets/css/components/positionmanagement.css';
 
-// // Remove the local 'api' constant definition if you are using the import above
-
 // const PositionManagement = () => {
 //   const [activeTab, setActiveTab] = useState('position');
 //   const [industries, setIndustries] = useState([]);
-//   const [position, setPositions] = useState([]);
+//   const [positions, setPositions] = useState([]);
 //   const [loading, setLoading] = useState(false);
+
+//   // Pagination state
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const itemsPerPage = 5;
 
 //   // Industry form state
 //   const [showIndustryForm, setShowIndustryForm] = useState(false);
@@ -34,15 +36,10 @@
 //     fetchPositions();
 //   }, []);
 
-
-
-
-
-//   // Fetch industries
+//   // --- Fetch Industries ---
 //   const fetchIndustries = async () => {
 //     try {
 //       setLoading(true);
-//       // Calls: http://localhost:3000/api/v1/industries (now correct)
 //       const response = await api.get('/admin/industry'); 
 //       setIndustries(response.data);
 //     } catch (error) {
@@ -52,70 +49,53 @@
 //       setLoading(false);
 //     }
 //   };
+
+//   // --- Industry Handlers ---
 //   const handleAddIndustry = () => {
 //     setIndustryFormData({ id: null, industry_name: '' });
 //     setShowIndustryForm(true);
 //   };
 
+//   const handleEditIndustry = (industry) => {
+//     setIndustryFormData({
+//       id: industry.id,
+//       industry_name: industry.industry_name
+//     });
+//     setShowIndustryForm(true);
+//   };
 
-// const handleIndustrySubmit = async () => {
-//   if (!industryFormData.industry_name.trim()) {
-//     alert('Industry name required');
-//     return;
-//   }
+//   const handleDeleteIndustry = async (id) => {
+//     if (!window.confirm('Delete this industry?')) return;
+//     await api.delete(`/admin/industry/${id}`);
+//     fetchIndustries();
+//   };
 
-//   try {
-//     if (industryFormData.id) {
-//       await api.put(
-//         `/admin/industry/${industryFormData.id}`,
-//         industryFormData
-//       );
-//       alert('✅ Industry updated successfully');
-//     } else {
-//       await api.post(
-//         '/admin/industry',
-//         industryFormData
-//       );
-//       alert('✅ Industry created successfully');
+//   const handleIndustrySubmit = async () => {
+//     if (!industryFormData.industry_name.trim()) {
+//       alert('Industry name required');
+//       return;
 //     }
 
-//     setShowIndustryForm(false);
-//     fetchIndustries();
-//   } catch (error) {
-//     console.error('Industry save error:', error.response?.data || error.message);
+//     try {
+//       if (industryFormData.id) {
+//         await api.put(`/admin/industry/${industryFormData.id}`, industryFormData);
+//         alert('✅ Industry updated successfully');
+//       } else {
+//         await api.post('/admin/industry', industryFormData);
+//         alert('✅ Industry created successfully');
+//       }
+//       setShowIndustryForm(false);
+//       fetchIndustries();
+//     } catch (error) {
+//       console.error('Industry save error:', error.response?.data || error.message);
+//       alert(error.response?.data?.message || '❌ Failed to save industry');
+//     }
+//   };
 
-//     alert(
-//       error.response?.data?.message ||
-//       '❌ Failed to save industry'
-//     );
-//   }
-// };
-
-// const handleEditIndustry = (industry) => {
-//   setIndustryFormData({
-//     id: industry.id,
-//     industry_name: industry.industry_name
-//   });
-//   setShowIndustryForm(true);
-// };
-
-
-// const handleDeleteIndustry = async (id) => {
-//   if (!window.confirm('Delete this industry?')) return;
-
-//   await api.delete(`/admin/industry/${id}`);
-//   fetchIndustries();
-// };
-
-
-
-
-
-//     // Fetch position
+//   // --- Fetch Positions ---
 //   const fetchPositions = async () => {
 //     try {
 //       setLoading(true);
-//       // Calls: http://localhost:3000/api/v1/position (now correct)
 //       const response = await api.get('/admin/position'); 
 //       setPositions(response.data);
 //     } catch (error) {
@@ -125,7 +105,8 @@
 //       setLoading(false);
 //     }
 //   };
-//   // Position Handlers (Logic remains the same, but uses the correct 'api')
+
+//   // --- Position Handlers ---
 //   const handleAddPosition = () => {
 //     setPositionFormData({
 //       id: null,
@@ -138,61 +119,45 @@
 //   };
 
 //   const handleEditPosition = (position) => {
-//   setPositionFormData({
-//     id: position.id,
-//     industry_id: String(position.industry_id),
-//     position_name: position.position_name,
-//     description: position.description,
-//     image_position: null, // keep null unless user uploads new
-//   });
-
-//   setShowPositionForm(true);        // ✅ REQUIRED
-//   setActiveTab('create-position');  // ✅ correct
-// };
-
+//     setPositionFormData({
+//       id: position.id,
+//       industry_id: String(position.industry_id),
+//       position_name: position.position_name,
+//       description: position.description,
+//       image_position: null,
+//     });
+//     setShowPositionForm(true);
+//     setActiveTab('create-position');
+//   };
 
 //   const handleDeletePosition = async (id) => {
-//     if (window.confirm('Are you sure you want to delete this position?')) {
-//       try {
-//         await api.delete(`/admin/position/${id}`);
-//         fetchPositions();
-//         alert('Position deleted successfully');
-//       } catch (error) {
-//         console.error('Error deleting position:', error);
-//         alert('Failed to delete position');
-//       }
+//     if (!window.confirm('Are you sure you want to delete this position?')) return;
+//     try {
+//       await api.delete(`/admin/position/${id}`);
+//       fetchPositions();
+//       alert('Position deleted successfully');
+//     } catch (error) {
+//       console.error('Error deleting position:', error);
+//       alert('Failed to delete position');
 //     }
 //   };
 
 //   const handlePositionSubmit = async () => {
-//     try {
-//       if (!positionFormData.position_name.trim() || !positionFormData.industry_id) {
-//         alert('Position title and industry are required.');
-//         return;
-//       }
+//     if (!positionFormData.position_name.trim() || !positionFormData.industry_id) {
+//       alert('Position title and industry are required.');
+//       return;
+//     }
 
-//       // Must use FormData for file uploads
+//     try {
 //       const formData = new FormData();
 //       formData.append('industry_id', positionFormData.industry_id);
 //       formData.append('position_name', positionFormData.position_name);
 //       formData.append('description', positionFormData.description || '');
-      
-//       // Only append the file if it exists
 //       if (positionFormData.image_position instanceof File) {
 //         formData.append('image_position', positionFormData.image_position);
-//       } else if (positionFormData.image_position === null && positionFormData.id) {
-//         // Handle case where we don't update the image during edit, 
-//         // but need to ensure FormData is still sent correctly.
-//         // Backend handles missing file.
 //       }
 
-
-//       // Set appropriate Content-Type for file upload
-//       const config = {
-//           headers: {
-//               'Content-Type': 'multipart/form-data'
-//           }
-//       };
+//       const config = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 //       if (positionFormData.id) {
 //         await api.put(`/admin/position/${positionFormData.id}`, formData, config);
@@ -204,27 +169,29 @@
 
 //       setShowPositionForm(false);
 //       fetchPositions();
-//       // Reset form data after successful save/update
 //       setPositionFormData({
-//           id: null,
-//           industry_id: '',
-//           position_name: '',
-//           description: '',
-//           image_position: null,
+//         id: null,
+//         industry_id: '',
+//         position_name: '',
+//         description: '',
+//         image_position: null,
 //       });
-//       setActiveTab('position'); // Switch back to view
+//       setActiveTab('position');
 //     } catch (error) {
 //       console.error('Error saving position:', error.response ? error.response.data : error.message);
 //       alert('Failed to save position. Check console for details.');
 //     }
 //   };
 
+//   // --- Pagination Logic ---
+//   const indexOfLast = currentPage * itemsPerPage;
+//   const indexOfFirst = indexOfLast - itemsPerPage;
+//   const currentPositions = positions.slice(indexOfFirst, indexOfLast);
+//   const totalPages = Math.ceil(positions.length / itemsPerPage);
 
-
-
-//   // Render method remains unchanged
+//   // --- Render ---
 //   return (
-//     <div className="position-management-container" style={{ padding: '2rem', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+//     <div className="position-management-container">
 //       {/* Tabs */}
 //       <ul className="nav nav-tabs mb-4">
 //         <li className="nav-item">
@@ -232,27 +199,26 @@
 //             className={`nav-link ${activeTab === 'position' ? 'active' : ''}`}
 //             onClick={() => setActiveTab('position')}
 //           >
-//             View Total Positions
+//             View Positions
 //           </button>
 //         </li>
-//           <li className="nav-item">
-//             <button
-//               className={`nav-link ${activeTab === 'industry' ? 'active' : ''}`}
-//               onClick={() => {
-//                   setActiveTab('industry');
-//                   setShowIndustryForm(false); // Hide form when switching to list view
-//               }}
-//             >
-//               Manage Industries
-//             </button>
-//           </li>
+//         <li className="nav-item">
+//           <button
+//             className={`nav-link ${activeTab === 'industry' ? 'active' : ''}`}
+//             onClick={() => {
+//               setActiveTab('industry');
+//               setShowIndustryForm(false);
+//             }}
+//           >
+//             Manage Industries
+//           </button>
+//         </li>
 //         <li className="nav-item">
 //           <button
 //             className={`nav-link ${activeTab === 'create-position' ? 'active' : ''}`}
 //             onClick={() => {
-//               // setActiveTab('position');  
-//                 setActiveTab('create-position');
-//                 handleAddPosition(); // Initialize form for new position
+//               setActiveTab('create-position');
+//               handleAddPosition();
 //             }}
 //           >
 //             Create/Update Position
@@ -264,43 +230,61 @@
 //       {activeTab === 'position' && (
 //         <div className="card p-4 mb-4">
 //           <h3>All Positions</h3>
-//           {loading && position.length === 0 ? <p>Loading...</p> : (
-//             <div className="table-responsive mt-3">
-//               <table className="table table-striped">
-//                 <thead>
-//                   <tr>
-//                     <th>ID</th>
-//                     <th>Title</th>
-//                     <th>Industry</th>
-//                     <th>Description</th>
-//                     <th>Action</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {position.map((p) => (
-//                     <tr key={p.id}>
-//                       <td>{p.id}</td>
-//                       <td>{p.position_name}</td>
-//                       <td>{p.industry}</td> {/* Assumes backend returns 'industry' field */}
-//                       <td>{p.description}</td>
-//                       <td>
-//                         <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditPosition(p)}>Edit</button>
-//                         <button className="btn btn-sm btn-danger" onClick={() => handleDeletePosition(p.id)}>Delete</button>
-//                       </td>
+//           {loading && positions.length === 0 ? <p>Loading...</p> : (
+//             <>
+//               <div className="table-responsive mt-3">
+//                 <table className="table table-striped">
+//                   <thead>
+//                     <tr>
+//                       <th>Number</th>
+//                       <th>Title</th>
+//                       <th>Industry</th>
+//                       <th>Description</th>
+//                       <th>Action</th>
 //                     </tr>
-//                   ))}
-//                   {position.length === 0 && !loading && (
-//                       <tr>
-//                         <td colSpan="5" className="text-center">No position found.</td>
+//                   </thead>
+//                   <tbody>
+//                     {currentPositions.map((p, index) => (
+//                       <tr key={p.id}>
+//                         <td>{indexOfFirst + index + 1}</td>
+//                         <td>{p.position_name}</td>
+//                         <td>{p.industry}</td>
+//                         <td>{p.description}</td>
+//                         <td>
+//                           <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditPosition(p)}>Edit</button>
+//                           <button className="btn btn-sm btn-danger" onClick={() => handleDeletePosition(p.id)}>Delete</button>
+//                         </td>
 //                       </tr>
-//                   )}
-//                 </tbody>
-//               </table>
-//             </div>
+//                     ))}
+//                     {positions.length === 0 && !loading && (
+//                       <tr>
+//                         <td colSpan="5" className="text-center">No positions found.</td>
+//                       </tr>
+//                     )}
+//                   </tbody>
+//                 </table>
+//               </div>
+
+//               {/* Pagination */}
+//               <div className="d-flex justify-content-center mt-3">
+//                 <ul className="pagination">
+//                   <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+//                     <button className="page-link" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Prev</button>
+//                   </li>
+//                   {[...Array(totalPages)].map((_, i) => (
+//                     <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+//                       <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+//                     </li>
+//                   ))}
+//                   <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+//                     <button className="page-link" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
+//                   </li>
+//                 </ul>
+//               </div>
+//             </>
 //           )}
 //         </div>
 //       )}
-
 
 //       {/* Industries Tab */}
 //       {activeTab === 'industry' && (
@@ -332,15 +316,15 @@
 //               <table className="table table-striped">
 //                 <thead>
 //                   <tr>
-//                     <th>ID</th>
+//                     <th>Number</th>
 //                     <th>Name</th>
 //                     <th>Actions</th>
 //                   </tr>
 //                 </thead>
 //                 <tbody>
-//                   {industries.map((ind) => (
+//                   {industries.map((ind, index) => (
 //                     <tr key={ind.id}>
-//                       <td>{ind.id}</td>
+//                       <td>{index + 1}</td>
 //                       <td>{ind.industry_name}</td>
 //                       <td>
 //                         <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditIndustry(ind)}>Edit</button>
@@ -349,9 +333,9 @@
 //                     </tr>
 //                   ))}
 //                   {industries.length === 0 && !loading && (
-//                       <tr>
-//                         <td colSpan="3" className="text-center">No industries found.</td>
-//                       </tr>
+//                     <tr>
+//                       <td colSpan="3" className="text-center">No industries found.</td>
+//                     </tr>
 //                   )}
 //                 </tbody>
 //               </table>
@@ -359,8 +343,6 @@
 //           )}
 //         </div>
 //       )}
-
-
 
 //       {/* Create/Update Position Tab */}
 //       {activeTab === 'create-position' && (
@@ -408,55 +390,70 @@
 //               type="file"
 //               className="form-control"
 //               accept="image/*"
-//               // When selecting a file, update the state with the File object
 //               onChange={(e) => setPositionFormData({ ...positionFormData, image_position: e.target.files[0] })}
 //             />
-//              {positionFormData.id && <small className="text-muted">Upload a new image to replace the current one.</small>}
+//             {positionFormData.id && <small className="text-muted">Upload a new image to replace the current one.</small>}
 //           </div>
 
 //           <div className="mb-3">
 //             <button className="btn btn-secondary me-2" onClick={() => {
 //                 setActiveTab('position');
-//                 handleAddPosition(); // Reset form state
+//                 handleAddPosition();
 //             }}>Cancel</button>
 //             <button className="btn btn-primary" onClick={handlePositionSubmit}>
 //                 {positionFormData.id ? 'Update' : 'Add'} Position
 //             </button>
 //           </div>
 
+//           {/* Positions Table in Form Tab */}
 //           <h5 className="mt-4">All Positions</h5>
-//           {loading && position.length === 0 ? <p>Loading...</p> : (
-//             <div className="table-responsive mt-2">
-//               <table className="table table-striped">
-//                 <thead>
-//                   <tr>
-//                     <th>ID</th>
-//                     <th>Title</th>
-//                     <th>Industry</th>
-//                     <th>Action</th>
+//           <div className="table-responsive mt-2">
+//             <table className="table table-striped">
+//               <thead>
+//                 <tr>
+//                    <th>Number</th>
+//                   <th>Title</th>
+//                   <th>Industry</th>
+//                   <th>Action</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {currentPositions.map((p, index) => (
+//                   <tr key={p.id}>
+//                     <td>{indexOfFirst + index + 1}</td>
+//                     <td>{p.position_name}</td>
+//                     <td>{p.industry}</td>
+//                     <td>
+//                       <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditPosition(p)}>Edit</button>
+//                       <button className="btn btn-sm btn-danger" onClick={() => handleDeletePosition(p.id)}>Delete</button>
+//                     </td>
 //                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {position.map((p) => (
-//                     <tr key={p.id}>
-//                       <td>{p.id}</td>
-//                       <td>{p.position_name}</td>
-//                       <td>{p.industry}</td>
-//                       <td>
-//                         <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditPosition(p)}>Edit</button>
-//                         <button className="btn btn-sm btn-danger" onClick={() => handleDeletePosition(p.id)}>Delete</button>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                   {position.length === 0 && !loading && (
-//                       <tr>
-//                         <td colSpan="4" className="text-center">No position found.</td>
-//                       </tr>
-//                   )}
-//                 </tbody>
-//               </table>
-//             </div>
-//           )}
+//                 ))}
+//                 {positions.length === 0 && !loading && (
+//                   <tr>
+//                     <td colSpan="4" className="text-center">No positions found.</td>
+//                   </tr>
+//                 )}
+//               </tbody>
+//             </table>
+//           </div>
+
+//           {/* Pagination in Form Tab */}
+//           <div className="d-flex justify-content-center mt-3">
+//             <ul className="pagination">
+//               <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+//                 <button className="page-link" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Prev</button>
+//               </li>
+//               {[...Array(totalPages)].map((_, i) => (
+//                 <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+//                   <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+//                 </li>
+//               ))}
+//               <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+//                 <button className="page-link" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
+//               </li>
+//             </ul>
+//           </div>
 //         </div>
 //       )}
 //     </div>
@@ -468,11 +465,15 @@
 
 
 
+
 // src/pages/PositionManagement.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../api/axiosConfig'; 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
 import '../assets/css/components/positionmanagement.css';
+import Swal from 'sweetalert2'; 
+
+const API_URL = 'http://localhost:3000'; 
 
 const PositionManagement = () => {
   const [activeTab, setActiveTab] = useState('position');
@@ -483,6 +484,10 @@ const PositionManagement = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // View Modal state
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState(null);
 
   // Industry form state
   const [showIndustryForm, setShowIndustryForm] = useState(false);
@@ -506,7 +511,7 @@ const PositionManagement = () => {
     fetchPositions();
   }, []);
 
-  // --- Fetch Industries ---
+  // --- Fetch Data ---
   const fetchIndustries = async () => {
     try {
       setLoading(true);
@@ -514,10 +519,32 @@ const PositionManagement = () => {
       setIndustries(response.data);
     } catch (error) {
       console.error('Error fetching industries:', error);
-      alert('Failed to fetch industries.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchPositions = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/admin/position'); 
+      setPositions(response.data);
+    } catch (error) {
+      console.error('Error fetching positions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- View Detail Handler ---
+  const handleViewPosition = (position) => {
+    setSelectedPosition(position);
+    setShowViewModal(true);
+  };
+
+  const closeViewModal = () => {
+    setShowViewModal(false);
+    setSelectedPosition(null);
   };
 
   // --- Industry Handlers ---
@@ -535,44 +562,43 @@ const PositionManagement = () => {
   };
 
   const handleDeleteIndustry = async (id) => {
-    if (!window.confirm('Delete this industry?')) return;
-    await api.delete(`/admin/industry/${id}`);
-    fetchIndustries();
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/admin/industry/${id}`);
+        fetchIndustries();
+        Swal.fire('Deleted!', 'Industry has been deleted.', 'success');
+      } catch (error) {
+        Swal.fire('Error', 'Failed to delete industry.', 'error');
+      }
+    }
   };
 
   const handleIndustrySubmit = async () => {
     if (!industryFormData.industry_name.trim()) {
-      alert('Industry name required');
+      Swal.fire('Warning', 'Industry name is required', 'warning');
       return;
     }
-
     try {
       if (industryFormData.id) {
         await api.put(`/admin/industry/${industryFormData.id}`, industryFormData);
-        alert('✅ Industry updated successfully');
+        Swal.fire('Success', 'Industry updated successfully', 'success');
       } else {
         await api.post('/admin/industry', industryFormData);
-        alert('✅ Industry created successfully');
+        Swal.fire('Success', 'Industry created successfully', 'success');
       }
       setShowIndustryForm(false);
       fetchIndustries();
     } catch (error) {
-      console.error('Industry save error:', error.response?.data || error.message);
-      alert(error.response?.data?.message || '❌ Failed to save industry');
-    }
-  };
-
-  // --- Fetch Positions ---
-  const fetchPositions = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get('/admin/position'); 
-      setPositions(response.data);
-    } catch (error) {
-      console.error('Error fetching position:', error);
-      alert('Failed to fetch position.');
-    } finally {
-      setLoading(false);
+      Swal.fire('Error', error.response?.data?.message || 'Failed to save industry', 'error');
     }
   };
 
@@ -594,27 +620,36 @@ const PositionManagement = () => {
       industry_id: String(position.industry_id),
       position_name: position.position_name,
       description: position.description,
-      image_position: null,
+      image_position: position.image_position,
     });
     setShowPositionForm(true);
     setActiveTab('create-position');
   };
 
   const handleDeletePosition = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this position?')) return;
-    try {
-      await api.delete(`/admin/position/${id}`);
-      fetchPositions();
-      alert('Position deleted successfully');
-    } catch (error) {
-      console.error('Error deleting position:', error);
-      alert('Failed to delete position');
+    const result = await Swal.fire({
+      title: 'Delete Position?',
+      text: "This action cannot be undone!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/admin/position/${id}`);
+        fetchPositions();
+        Swal.fire('Deleted!', 'Position has been deleted.', 'success');
+      } catch (error) {
+        Swal.fire('Error', 'Failed to delete position', 'error');
+      }
     }
   };
 
   const handlePositionSubmit = async () => {
     if (!positionFormData.position_name.trim() || !positionFormData.industry_id) {
-      alert('Position title and industry are required.');
+      Swal.fire('Missing Info', 'Position title and industry are required.', 'warning');
       return;
     }
 
@@ -623,6 +658,7 @@ const PositionManagement = () => {
       formData.append('industry_id', positionFormData.industry_id);
       formData.append('position_name', positionFormData.position_name);
       formData.append('description', positionFormData.description || '');
+      
       if (positionFormData.image_position instanceof File) {
         formData.append('image_position', positionFormData.image_position);
       }
@@ -631,10 +667,10 @@ const PositionManagement = () => {
 
       if (positionFormData.id) {
         await api.put(`/admin/position/${positionFormData.id}`, formData, config);
-        alert('Position updated successfully');
+        Swal.fire('Updated!', 'Position updated successfully', 'success');
       } else {
         await api.post('/admin/position', formData, config);
-        alert('Position created successfully');
+        Swal.fire('Created!', 'Position created successfully', 'success');
       }
 
       setShowPositionForm(false);
@@ -648,9 +684,24 @@ const PositionManagement = () => {
       });
       setActiveTab('position');
     } catch (error) {
-      console.error('Error saving position:', error.response ? error.response.data : error.message);
-      alert('Failed to save position. Check console for details.');
+      console.error('Error saving position:', error);
+      Swal.fire('Error', 'Failed to save position.', 'error');
     }
+  };
+
+  const renderImagePreview = () => {
+    if (!positionFormData.image_position) return null;
+    let src = '';
+    if (positionFormData.image_position instanceof File) {
+      src = URL.createObjectURL(positionFormData.image_position);
+    } else {
+      src = `${API_URL}/uploads/positions/${positionFormData.image_position}`;
+    }
+    return (
+      <div className="mt-2">
+        <img src={src} alt="Preview" className="img-thumbnail" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+      </div>
+    );
   };
 
   // --- Pagination Logic ---
@@ -659,136 +710,144 @@ const PositionManagement = () => {
   const currentPositions = positions.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(positions.length / itemsPerPage);
 
-  // --- Render ---
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="position-management-container">
       {/* Tabs */}
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === 'position' ? 'active' : ''}`}
-            onClick={() => setActiveTab('position')}
-          >
+          <button className={`nav-link ${activeTab === 'position' ? 'active' : ''}`} onClick={() => setActiveTab('position')}>
             View Positions
           </button>
         </li>
         <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === 'industry' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('industry');
-              setShowIndustryForm(false);
-            }}
-          >
+          <button className={`nav-link ${activeTab === 'industry' ? 'active' : ''}`} onClick={() => { setActiveTab('industry'); setShowIndustryForm(false); }}>
             Manage Industries
           </button>
         </li>
         <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === 'create-position' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('create-position');
-              handleAddPosition();
-            }}
-          >
+          <button className={`nav-link ${activeTab === 'create-position' ? 'active' : ''}`} onClick={() => { setActiveTab('create-position'); handleAddPosition(); }}>
             Create/Update Position
           </button>
         </li>
       </ul>
 
-      {/* Positions Tab */}
+      {/* --- Tab 1: View Positions --- */}
       {activeTab === 'position' && (
-        <div className="card p-4 mb-4">
-          <h3>All Positions</h3>
-          {loading && positions.length === 0 ? <p>Loading...</p> : (
+        <div className="card p-4 mb-4 shadow-sm">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h3>All Positions</h3>
+            <span className="badge bg-primary">Total: {positions.length}</span>
+          </div>
+          
+          {loading && positions.length === 0 ? (
+            <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>
+          ) : (
             <>
-              <div className="table-responsive mt-3">
-                <table className="table table-striped">
-                  <thead>
+              <div className="table-responsive">
+                <table className="table table-hover align-middle">
+                  <thead className="table-light">
                     <tr>
-                      <th>Number</th>
+                      <th>No.</th>
+                      <th>Image</th>
                       <th>Title</th>
                       <th>Industry</th>
-                      <th>Description</th>
-                      <th>Action</th>
+                      <th style={{width: '200px'}}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {currentPositions.map((p, index) => (
                       <tr key={p.id}>
                         <td>{indexOfFirst + index + 1}</td>
-                        <td>{p.position_name}</td>
-                        <td>{p.industry}</td>
-                        <td>{p.description}</td>
                         <td>
-                          <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditPosition(p)}>Edit</button>
-                          <button className="btn btn-sm btn-danger" onClick={() => handleDeletePosition(p.id)}>Delete</button>
+                          {p.image_position ? (
+                            <img 
+                              src={`${API_URL}/uploads/positions/${p.image_position}`} 
+                              alt={p.position_name}
+                              style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #dee2e6' }}
+                              onError={(e) => {e.target.style.display='none'}}
+                            />
+                          ) : <span className="text-muted small">No Img</span>}
+                        </td>
+                        <td className="fw-bold text-dark">{p.position_name}</td>
+                        <td><span className="badge bg-light text-dark border">{p.industry}</span></td>
+                        <td>
+                          {/* ✅ View Button Added */}
+                          <button className="btn btn-sm btn-info text-white me-2" onClick={() => handleViewPosition(p)} title="View Detail">
+                             👁️ 
+                          </button>
+                          <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEditPosition(p)} title="Edit">
+                             ✏️ 
+                          </button>
+                          <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeletePosition(p.id)} title="Delete">
+                             🗑️ 
+                          </button>
                         </td>
                       </tr>
                     ))}
-                    {positions.length === 0 && !loading && (
-                      <tr>
-                        <td colSpan="5" className="text-center">No positions found.</td>
-                      </tr>
+                    {positions.length === 0 && (
+                      <tr><td colSpan="5" className="text-center p-4">No positions found.</td></tr>
                     )}
                   </tbody>
                 </table>
               </div>
 
-              {/* Pagination */}
-              <div className="d-flex justify-content-center mt-3">
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Prev</button>
-                  </li>
-                  {[...Array(totalPages)].map((_, i) => (
-                    <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                      <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+              {/* ✅ Pagination Controls */}
+              {totalPages > 1 && (
+                <nav className="d-flex justify-content-center mt-4">
+                  <ul className="pagination">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => paginate(currentPage - 1)}>Previous</button>
                     </li>
-                  ))}
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
-                  </li>
-                </ul>
-              </div>
+                    {[...Array(totalPages)].map((_, i) => (
+                      <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                        <button className="page-link" onClick={() => paginate(i + 1)}>{i + 1}</button>
+                      </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <button className="page-link" onClick={() => paginate(currentPage + 1)}>Next</button>
+                    </li>
+                  </ul>
+                </nav>
+              )}
             </>
           )}
         </div>
       )}
 
-      {/* Industries Tab */}
+      {/* --- Tab 2: Manage Industries --- */}
       {activeTab === 'industry' && (
-        <div className="card p-4 mb-4">
+        <div className="card p-4 mb-4 shadow-sm">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h3>Industry Management</h3>
             <button className="btn btn-success" onClick={handleAddIndustry}>+ Add Industry</button>
           </div>
 
           {showIndustryForm && (
-            <div className="card p-3 mb-4">
-              <h5>{industryFormData.id ? 'Edit Industry' : 'Add New Industry'}</h5>
-              <input
-                type="text"
-                className="form-control my-2"
-                placeholder="Industry Name"
-                value={industryFormData.industry_name}
-                onChange={(e) => setIndustryFormData({ ...industryFormData, industry_name: e.target.value })}
-              />
-              <div>
-                <button className="btn btn-secondary me-2" onClick={() => setShowIndustryForm(false)}>Cancel</button>
+            <div className="card p-3 mb-4 bg-light border-0">
+              <h5 className="mb-3">{industryFormData.id ? 'Edit Industry' : 'Add New Industry'}</h5>
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter industry name..."
+                  value={industryFormData.industry_name}
+                  onChange={(e) => setIndustryFormData({ ...industryFormData, industry_name: e.target.value })}
+                />
                 <button className="btn btn-primary" onClick={handleIndustrySubmit}>Save</button>
+                <button className="btn btn-outline-secondary" onClick={() => setShowIndustryForm(false)}>Cancel</button>
               </div>
             </div>
           )}
           
-          {loading && industries.length === 0 ? <p>Loading industries...</p> : (
-            <div className="table-responsive">
-              <table className="table table-striped">
+          <div className="table-responsive">
+              <table className="table table-striped align-middle">
                 <thead>
                   <tr>
-                    <th>Number</th>
+                    <th>No.</th>
                     <th>Name</th>
-                    <th>Actions</th>
+                    <th style={{width: '150px'}}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -797,135 +856,97 @@ const PositionManagement = () => {
                       <td>{index + 1}</td>
                       <td>{ind.industry_name}</td>
                       <td>
-                        <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditIndustry(ind)}>Edit</button>
-                        <button className="btn btn-sm btn-danger" onClick={() => handleDeleteIndustry(ind.id)}>Delete</button>
+                        <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEditIndustry(ind)}>✏️</button>
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteIndustry(ind.id)}>🗑️</button>
                       </td>
                     </tr>
                   ))}
-                  {industries.length === 0 && !loading && (
-                    <tr>
-                      <td colSpan="3" className="text-center">No industries found.</td>
-                    </tr>
-                  )}
                 </tbody>
               </table>
-            </div>
-          )}
+          </div>
         </div>
       )}
 
-      {/* Create/Update Position Tab */}
+      {/* --- Tab 3: Create/Update Position --- */}
       {activeTab === 'create-position' && (
-        <div className="card p-4 mb-4">
-          <h3>{positionFormData.id ? 'Edit Position' : 'Add New Position'}</h3>
-          <div className="mb-3">
-            <label>Industry</label>
-            <select
-              className="form-select"
-              value={positionFormData.industry_id}
-              onChange={(e) => setPositionFormData({ ...positionFormData, industry_id: e.target.value })}
-            >
-              <option value="">Select Industry</option>
-              {industries.map((ind) => (
-                <option key={ind.id} value={ind.id}>{ind.industry_name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label>Position Title</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Position Title"
-              value={positionFormData.position_name}
-              onChange={(e) => setPositionFormData({ ...positionFormData, position_name: e.target.value })}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label>Description</label>
-            <textarea
-              className="form-control"
-              rows="3"
-              placeholder="Description"
-              value={positionFormData.description}
-              onChange={(e) => setPositionFormData({ ...positionFormData, description: e.target.value })}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label>Image (Optional)</label>
-            <input
-              type="file"
-              className="form-control"
-              accept="image/*"
-              onChange={(e) => setPositionFormData({ ...positionFormData, image_position: e.target.files[0] })}
-            />
-            {positionFormData.id && <small className="text-muted">Upload a new image to replace the current one.</small>}
-          </div>
-
-          <div className="mb-3">
-            <button className="btn btn-secondary me-2" onClick={() => {
-                setActiveTab('position');
-                handleAddPosition();
-            }}>Cancel</button>
-            <button className="btn btn-primary" onClick={handlePositionSubmit}>
-                {positionFormData.id ? 'Update' : 'Add'} Position
-            </button>
-          </div>
-
-          {/* Positions Table in Form Tab */}
-          <h5 className="mt-4">All Positions</h5>
-          <div className="table-responsive mt-2">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                   <th>Number</th>
-                  <th>Title</th>
-                  <th>Industry</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentPositions.map((p, index) => (
-                  <tr key={p.id}>
-                    <td>{indexOfFirst + index + 1}</td>
-                    <td>{p.position_name}</td>
-                    <td>{p.industry}</td>
-                    <td>
-                      <button className="btn btn-sm btn-primary me-2" onClick={() => handleEditPosition(p)}>Edit</button>
-                      <button className="btn btn-sm btn-danger" onClick={() => handleDeletePosition(p.id)}>Delete</button>
-                    </td>
-                  </tr>
+        <div className="card p-4 mb-4 shadow-sm">
+          <h3 className="mb-4">{positionFormData.id ? 'Edit Position' : 'Add New Position'}</h3>
+          <div className="row g-3">
+            <div className="col-md-6">
+                <label className="form-label fw-bold">Industry <span className="text-danger">*</span></label>
+                <select className="form-select" value={positionFormData.industry_id} onChange={(e) => setPositionFormData({ ...positionFormData, industry_id: e.target.value })}>
+                <option value="">Select Industry</option>
+                {industries.map((ind) => (
+                    <option key={ind.id} value={ind.id}>{ind.industry_name}</option>
                 ))}
-                {positions.length === 0 && !loading && (
-                  <tr>
-                    <td colSpan="4" className="text-center">No positions found.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination in Form Tab */}
-          <div className="d-flex justify-content-center mt-3">
-            <ul className="pagination">
-              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>Prev</button>
-              </li>
-              {[...Array(totalPages)].map((_, i) => (
-                <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                  <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
-                </li>
-              ))}
-              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>Next</button>
-              </li>
-            </ul>
+                </select>
+            </div>
+            <div className="col-md-6">
+                <label className="form-label fw-bold">Position Title <span className="text-danger">*</span></label>
+                <input type="text" className="form-control" placeholder="e.g. Senior Developer" value={positionFormData.position_name} onChange={(e) => setPositionFormData({ ...positionFormData, position_name: e.target.value })}/>
+            </div>
+            <div className="col-12">
+                <label className="form-label fw-bold">Description</label>
+                <textarea className="form-control" rows="4" placeholder="Description..." value={positionFormData.description} onChange={(e) => setPositionFormData({ ...positionFormData, description: e.target.value })}/>
+            </div>
+            <div className="col-12">
+                <label className="form-label fw-bold">Image (Optional)</label>
+                <input type="file" className="form-control" accept="image/*" onChange={(e) => setPositionFormData({ ...positionFormData, image_position: e.target.files[0] })}/>
+                {renderImagePreview()}
+            </div>
+            <div className="col-12 mt-4">
+                <button className="btn btn-primary px-4 me-2" onClick={handlePositionSubmit}>{positionFormData.id ? 'Update Position' : 'Create Position'}</button>
+                <button className="btn btn-secondary px-4" onClick={() => { setActiveTab('position'); handleAddPosition(); }}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
+
+      {/* ✅ View Detail Modal (Popup) */}
+      {showViewModal && selectedPosition && (
+        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} tabIndex="-1">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Position Details</h5>
+                <button type="button" className="btn-close" onClick={closeViewModal}></button>
+              </div>
+              <div className="modal-body">
+                <div className="text-center mb-4">
+                  {selectedPosition.image_position ? (
+                    <img 
+                      src={`${API_URL}/uploads/positions/${selectedPosition.image_position}`} 
+                      alt={selectedPosition.position_name}
+                      className="img-fluid rounded shadow-sm"
+                      style={{ maxHeight: '200px', objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <div className="bg-light p-4 rounded text-muted">No Image Available</div>
+                  )}
+                </div>
+                
+                <div className="mb-3">
+                    <label className="fw-bold text-muted small text-uppercase">Title</label>
+                    <p className="fs-5 text-dark mb-0">{selectedPosition.position_name}</p>
+                </div>
+                <div className="mb-3">
+                    <label className="fw-bold text-muted small text-uppercase">Industry</label>
+                    <p className="fs-5 text-dark mb-0"><span className="badge bg-info text-dark">{selectedPosition.industry}</span></p>
+                </div>
+                <div className="mb-3">
+                    <label className="fw-bold text-muted small text-uppercase">Description</label>
+                    <p className="text-secondary bg-light p-3 rounded">{selectedPosition.description || "No description provided."}</p>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={closeViewModal}>Close</button>
+                <button type="button" className="btn btn-primary" onClick={() => { closeViewModal(); handleEditPosition(selectedPosition); }}>Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

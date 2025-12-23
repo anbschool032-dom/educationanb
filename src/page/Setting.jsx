@@ -52,24 +52,6 @@ useEffect(() => {
   fetchProfile();
 }, []);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const res = await api.get('/auth/me');
-  //       const data = res.data;
-  //       setProfileData({
-  //         first_name: data.first_name || '',
-  //         last_name: data.last_name || '',
-  //         phone: data.phone || '',
-  //         previewImage: data.profile_image ? `/uploads/profiles/${data.profile_image}` : null,
-  //       });
-  //     } catch (err) {
-  //       console.error('Failed to load profile:', err);
-  //     }
-  //   };
-  //   fetchProfile();
-  // }, []);
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {

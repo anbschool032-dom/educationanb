@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const { user } = useAuth();
-
+console.log("User Data in Header:", user);
   // 1. Get the name safely
   const fullName = user?.first_name
     ? `${user.first_name} ${user.last_name || ''}`.trim()
