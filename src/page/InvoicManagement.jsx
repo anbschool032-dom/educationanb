@@ -32,7 +32,6 @@ const InvoiceManagement = () => {
 
       {/* Header Text */}
       <h2 className="mb-4 text-dark fw-bold">Invoice Management</h2>
-      <h3>Hello pro ci/cd please work 🤨</h3>
       {/* Stats Cards - ដូរទៅពណ៌ស (bg-white) */}
       <div className="row mb-4">
         <div className="col-md-6 mb-3">
