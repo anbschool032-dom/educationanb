@@ -12,11 +12,13 @@ const SettingsPage = () => {
   
   // ✅ FIX: ប្រើ Environment Variable ជំនួស localhost
 // ទាញយក Link ពី .env (ឧ. ...:3000/api/v1)
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-// ✂️ កាត់ '/api/v1' ចេញ ដើម្បីបាន Link សម្រាប់រូបភាព (ឧ. ...:3000)
-const API_IMG_URL = API_BASE.replace('/api/v1', '');
-
+// // ✂️ កាត់ '/api/v1' ចេញ ដើម្បីបាន Link សម្រាប់រូបភាព (ឧ. ...:3000)
+// const API_IMG_URL = API_BASE.replace('/api/v1', '');
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+  const API_IMG_URL = API_BASE_URL.replace('/api/v1', '');
+  
   // State for Password Visibility Toggle (✨ Feature ថ្មី)
   const [showPassword, setShowPassword] = useState(false);
 
