@@ -3,36 +3,28 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - adminClient  # ⚠️ ពិនិត្យមើលថា Branch បងឈ្មោះ main ឬ adminClient?
+      - adminClient  # ✅ ត្រូវប្រាកដថាឈ្មោះនេះត្រូវ
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Deploy to Server via SSH
+    - name: Deploy via SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          # 1. ចូលទៅកាន់ Folder Frontend នៅលើ Server
           cd /var/www/careersync/frontend
           
-          # 2. ទាញយកកូដថ្មី
-          git pull origin main # ឬ adminClient (តាមឈ្មោះ branch បង)
+          # 🔥 កែត្រង់នេះ៖ ឱ្យវាចាប់យកកូដថ្មីពី adminClient
+          git fetch --all
+          git reset --hard origin/adminClient
           
-          # 3. ដំឡើង Library (ក្រែងលោមាន update)
+          # Build ឡើងវិញ
           npm install
-          
-          # 4. Build កូដថ្មី (សំខាន់បំផុតសម្រាប់ React/Vite)
           npm run build
           
-          # (Optional) Reload Nginx ដើម្បីឱ្យប្រាកដថាវាចាប់យក file ថ្មី
-          # sudo systemctl reload nginx
-          
-          echo "🚀 Frontend Deployed & Built Successfully!"
+          echo "✅ Frontend Deployed Successfully!"
