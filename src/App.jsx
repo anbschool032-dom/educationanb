@@ -16,6 +16,7 @@ import SettingsPage from './page/Setting';
 import VerifyEmail from './components/VerifyEmail';
 import ResetPassword from './components/ResetPassword';
 import ForgotPassword from './components/ForgotPassword';
+import NotificationBell from './components/NotificationBell';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               <Route path='/invoice-management' element={<InvoiceManagement />} />
               <Route path='/certificate-management' element={<CertificateManagement />} />
               <Route path='/settings' element={<SettingsPage />} />
+              <Route path="/notification" element={< NotificationBell />} />
             </Route>
           </Route>
           

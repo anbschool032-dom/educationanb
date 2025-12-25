@@ -144,3 +144,55 @@
   .form-row, .details-grid { grid-template-columns: 1fr; }
   .user-table { display: block; overflow-x: auto; }
 }
+
+/* =========================================
+   🔥 SWEETALERT2 CUSTOM STYLES (Modern Popup)
+   ========================================= */
+
+/* 1. Popup Body - ធ្វើឱ្យជ្រុងមូល និងមាន Shadow ស្អាត */
+div:where(.swal2-container) div:where(.swal2-popup) {
+  border-radius: 20px !important; /* ជ្រុងមូលខ្លាំង */
+  padding: 2rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  font-family: 'Inter', sans-serif;
+}
+
+/* 2. Title - អក្សរដិត និងពណ៌ដិត */
+div:where(.swal2-container) h2:where(.swal2-title) {
+  color: #1e293b !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* 3. Content Text - ពណ៌ប្រផេះស្រាល */
+div:where(.swal2-container) div:where(.swal2-html-container) {
+  color: #64748b !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+/* 4. Buttons - កែប៊ូតុងឱ្យដូចប៊ូតុងក្នុង App */
+div:where(.swal2-container) button:where(.swal2-styled) {
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  transition: transform 0.2s ease !important;
+}
+
+div:where(.swal2-container) button:where(.swal2-styled):hover {
+  transform: translateY(-2px) !important; /* Effect ពេលដាក់ Mouse លើ */
+}
+
+/* 5. Custom Button Colors (Override default) */
+.swal-confirm-btn {
+  background-color: #4F46E5 !important; /* Indigo for Confirm */
+}
+.swal-cancel-btn {
+  background-color: #94a3b8 !important; /* Grey for Cancel */
+}
+.swal-danger-btn {
+  background-color: #EF4444 !important; /* Red for Delete */
+}

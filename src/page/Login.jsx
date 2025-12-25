@@ -389,9 +389,9 @@ const AdminLogin = () => {
               </label>
             </div>
 
-            <a href="#" className="small text-primary text-decoration-none">
+            {/* <a href="#" className="small text-primary text-decoration-none">
               Forgot password?
-            </a>
+            </a> */}
           </div>
 
           {/* BUTTON */}
