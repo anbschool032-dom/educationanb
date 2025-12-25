@@ -209,11 +209,20 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/
             <div className="text-center mb-5">
               <div className="profile-pic-wrapper mx-auto position-relative d-inline-block">
                 <img
-                  src={profileData.previewImage || 'https://via.placeholder.com/150?text=User'}
+                  src={
+                    profileData.previewImage || 
+                    `https://ui-avatars.com/api/?name=${profileData.first_name}+${profileData.last_name}&background=random&color=fff&size=150`
+                  }
                   alt="Profile"
                   className="profile-pic rounded-circle shadow-sm"
                   style={{ width: '150px', height: '150px', objectFit: 'cover' }}
-                  onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=Err'; }} 
+                  onError={(e) => {
+                    // 1. បញ្ឈប់ Loop (សំខាន់បំផុត!)
+                    e.target.onerror = null; 
+                    
+                    // 2. បើ Load រូបផ្ទាល់ខ្លួនមិនចេញ ឱ្យវាយកឈ្មោះទៅបង្កើតជារូបអក្សរជំនួសវិញ
+                    e.target.src = `https://ui-avatars.com/api/?name=${profileData.first_name || 'User'}+${profileData.last_name || ''}&background=random&color=fff&size=150`;
+                  }}
                 />
                 <label htmlFor="upload" className="upload-overlay">
                   <i className="bi bi-camera-fill"></i>
