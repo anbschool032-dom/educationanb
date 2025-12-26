@@ -32,7 +32,8 @@ const UserManagement = () => {
   const [modalLoading, setModalLoading] = useState(false);
 
   const currentUser = JSON.parse(localStorage.getItem('user')) || {};
-  const API_IMG_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1').replace('/api/v1', '');
+
+const API_IMG_URL = '';
 
   // --- HELPER: ROLE & STATUS ---
   const getRoleBadge = (role) => <span className={`user-role-badge ${role?.toLowerCase() || 'user'}`}>{role || 'User'}</span>;

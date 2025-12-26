@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom'; // ✅ 1. Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import api from '../api/axiosConfig'; 
 import '../assets/css/components/header.css'; 
 
 const Header = () => {
   const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState(user);
-  const navigate = useNavigate(); // ✅ 2. ប្រើសម្រាប់ចុចទៅ Page ផ្សេង
+  const navigate = useNavigate();
 
   // Fetch User Data
   useEffect(() => {
     const fetchLatestProfile = async () => {
       try {
         if (user?.id) {
-          // បើ route /auth/me មិនដើរ សូមប្តូរទៅ route ដែលបងមាន
           const res = await api.get('/auth/me'); 
           setCurrentUser(res.data);
         }
@@ -25,14 +24,17 @@ const Header = () => {
     if (user) fetchLatestProfile();
   }, [user]);
 
-  // Setup Image URLs
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
-  const API_IMG_URL = API_BASE_URL.replace('/api/v1', '');
+  // =========================================================
+  // ✅ FIX: MIXED CONTENT ERROR
+  // ដាក់ទទេ ('') ដើម្បីឱ្យ Browser ប្រើ Domain បច្ចុប្បន្ន (HTTPS) ស្វ័យប្រវត្តិ
+  // =========================================================
+  const API_IMG_URL = '';
 
   const fullName = currentUser?.first_name
     ? `${currentUser.first_name} ${currentUser.last_name || ''}`.trim()
     : 'Admin User';
 
+  // ពេលនេះ Link នឹងចេញជា: "/uploads/profiles/..." (Relative Path) -> ដើរគ្រប់កន្លែង!
   const profileSrc = currentUser?.profile_image 
     ? `${API_IMG_URL}/uploads/profiles/${currentUser.profile_image}`
     : null;
@@ -41,34 +43,24 @@ const Header = () => {
 
   return (
     <header className="admin-header">
-      {/* ផ្នែកខាងឆ្វេង: Welcome Text */}
       <div className="header-title">
         <span className="text-muted">Welcome back,</span> <br className="d-md-none" />
         <strong>{fullName}</strong> 👋
       </div>
       
-      {/* ផ្នែកខាងស្តាំ: Controls & Profile */}
       <div className="header-controls">
-        
-        {/* ==================================================== */}
-        {/* 🔥 3. ដាក់ ICON NOTIFICATION នៅទីនេះផ្ទាល់តែម្ដង!    */}
-        {/* ==================================================== */}
+        {/* Notification Icon */}
         <div 
           className="position-relative d-inline-block me-4" 
           style={{ cursor: 'pointer' }}
-          onClick={() => navigate('/notifications')} // ចុចទៅបើក Page (បើមាន)
+          onClick={() => navigate('/notifications')} 
         >
-          {/* រូបកណ្ដឹង */}
           <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: '#64748b' }}></i>
-          
-          {/* ចំណុចក្រហម (Static Badge) - បង្ហាញថាលម្អ */}
           <span 
             className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
             style={{ width: '10px', height: '10px' }}
           ></span>
         </div>
-        {/* ==================================================== */}
-
 
         {/* Profile Section */}
         <div className="profile-container">
