@@ -1,183 +1,97 @@
-// // src/components/Header.jsx
-// import React, { useState, useEffect } from 'react';
-// import { useAuth } from '../contexts/AuthContext';
-
-// const Header = () => {
-//   const { user } = useAuth();
-  
-//   // 1. Logic បង្កើត Base URL (ដូចក្នុង SettingsPage ដែរ)
-//   // វានឹងដំណើរការទាំង Local (localhost:3000) និង Server (13.53...)
-//   const getBaseUrl = () => {
-//     const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
-//     return apiUrl.replace('/api/v1', '');
-//   };
-//   const API_URL = getBaseUrl();
-
-//   // 2. បង្កើត Link រូបភាព
-//   const profileImageUrl = user?.profile_image
-//     ? `${API_URL}/uploads/profiles/${user.profile_image}`
-//     : null;
-
-//   // 3. State សម្រាប់គ្រប់គ្រងថាគួរបង្ហាញរូប ឬ Icon (ដោះស្រាយបញ្ហារូបបែក)
-//   const [imgError, setImgError] = useState(false);
-
-//   // Reset error state ពេល user ប្តូរ (ឧ. ពេល login ថ្មី)
-//   useEffect(() => {
-//     setImgError(false);
-//   }, [user]);
-
-//   const fullName = user?.first_name
-//     ? `${user.first_name} ${user.last_name || ''}`.trim()
-//     : user?.email?.split('@')[0] || 'Admin';
-
-//   return (
-//     <header className="admin-header">
-//       <div className="header-title">
-//         Welcome, <strong>{fullName}</strong>
-//       </div>
-      
-//       <div className="header-controls">
-//         <button className="btn-icon" title="Notifications">
-//           🔔
-//         </button>
-
-//         <div className="profile-badge" title="Profile" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-          
-//           {/* LOGIC: បើមានរូប ហើយមិនទាន់ Error -> បង្ហាញរូប */}
-//           {profileImageUrl && !imgError ? (
-//             <img 
-//               src={profileImageUrl} 
-//               alt="Profile" 
-//               className="profile-avatar"
-//               style={{
-//                 width: '40px',
-//                 height: '40px',
-//                 borderRadius: '50%',
-//                 objectFit: 'cover',
-//                 border: '2px solid #fff',
-//                 boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-//               }}
-//               onError={() => setImgError(true)} 
-//             />
-//           ) : (
-//             // LOGIC: បើអត់រូប ឬ រូបបែក -> បង្ហាញ Icon
-//             <div 
-//               className="profile-fallback-icon"
-//               style={{ 
-//                 width: '40px', 
-//                 height: '40px', 
-//                 borderRadius: '50%', 
-//                 background: '#667eea', 
-//                 color: 'white',
-//                 display: 'flex',
-//                 alignItems: 'center', 
-//                 justifyContent: 'center',
-//                 fontSize: '20px',
-//                 fontWeight: 'bold'
-//               }}
-//             >
-//               {fullName.charAt(0).toUpperCase()}
-//             </div>
-//           )}
-
-//           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-//             <span style={{ fontSize: '14px', fontWeight: '500' }}>{fullName}</span>
-//             <span className="role-badge" style={{ fontSize: '11px', color: '#666', textTransform: 'capitalize' }}>
-//                 {user?.role_name || 'Admin'}
-//             </span>
-//           </div>
-//         </div>
-//       </div>
-//     </header>
-//   );
-// };
-
-// export default Header;
-
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-// ✅ IMPORT YOUR NEW COMPONENT
-import NotificationBell from './NotificationBell'; 
+import { useNavigate } from 'react-router-dom'; // ✅ 1. Import useNavigate
+import api from '../api/axiosConfig'; 
+import '../assets/css/components/header.css'; 
 
 const Header = () => {
   const { user } = useAuth();
-  
-  const getBaseUrl = () => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
-    return apiUrl.replace('/api/v1', '');
-  };
-  const API_URL = getBaseUrl();
+  const [currentUser, setCurrentUser] = useState(user);
+  const navigate = useNavigate(); // ✅ 2. ប្រើសម្រាប់ចុចទៅ Page ផ្សេង
 
-  const profileImageUrl = user?.profile_image
-    ? `${API_URL}/uploads/profiles/${user.profile_image}`
-    : null;
-
-  const [imgError, setImgError] = useState(false);
-
+  // Fetch User Data
   useEffect(() => {
-    setImgError(false);
+    const fetchLatestProfile = async () => {
+      try {
+        if (user?.id) {
+          // បើ route /auth/me មិនដើរ សូមប្តូរទៅ route ដែលបងមាន
+          const res = await api.get('/auth/me'); 
+          setCurrentUser(res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching header profile:", err);
+      }
+    };
+    if (user) fetchLatestProfile();
   }, [user]);
 
-  const fullName = user?.first_name
-    ? `${user.first_name} ${user.last_name || ''}`.trim()
-    : user?.email?.split('@')[0] || 'Admin';
+  // Setup Image URLs
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+  const API_IMG_URL = API_BASE_URL.replace('/api/v1', '');
+
+  const fullName = currentUser?.first_name
+    ? `${currentUser.first_name} ${currentUser.last_name || ''}`.trim()
+    : 'Admin User';
+
+  const profileSrc = currentUser?.profile_image 
+    ? `${API_IMG_URL}/uploads/profiles/${currentUser.profile_image}`
+    : null;
+
+  const fallbackSrc = `https://ui-avatars.com/api/?name=${fullName}&background=4f46e5&color=fff&size=128&bold=true`;
 
   return (
     <header className="admin-header">
+      {/* ផ្នែកខាងឆ្វេង: Welcome Text */}
       <div className="header-title">
-        Welcome, <strong>{fullName}</strong>
+        <span className="text-muted">Welcome back,</span> <br className="d-md-none" />
+        <strong>{fullName}</strong> 👋
       </div>
       
+      {/* ផ្នែកខាងស្តាំ: Controls & Profile */}
       <div className="header-controls">
         
-        {/* ✅ REPLACED STATIC BUTTON WITH NOTIFICATION COMPONENT */}
-        <NotificationBell />
-
-        <div className="profile-badge" title="Profile" style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+        {/* ==================================================== */}
+        {/* 🔥 3. ដាក់ ICON NOTIFICATION នៅទីនេះផ្ទាល់តែម្ដង!    */}
+        {/* ==================================================== */}
+        <div 
+          className="position-relative d-inline-block me-4" 
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/notifications')} // ចុចទៅបើក Page (បើមាន)
+        >
+          {/* រូបកណ្ដឹង */}
+          <i className="bi bi-bell" style={{ fontSize: '1.5rem', color: '#64748b' }}></i>
           
-          {profileImageUrl && !imgError ? (
+          {/* ចំណុចក្រហម (Static Badge) - បង្ហាញថាលម្អ */}
+          <span 
+            className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+            style={{ width: '10px', height: '10px' }}
+          ></span>
+        </div>
+        {/* ==================================================== */}
+
+
+        {/* Profile Section */}
+        <div className="profile-container">
+          <div className="profile-info d-none d-md-flex">
+            <span className="profile-name">{currentUser?.first_name || 'Admin'}</span>
+            <span className="profile-role">{currentUser?.role_name || 'Administrator'}</span>
+          </div>
+
+          <div className="profile-img-wrapper">
             <img 
-              src={profileImageUrl} 
+              src={profileSrc || fallbackSrc} 
               alt="Profile" 
               className="profile-avatar"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                border: '2px solid #fff',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-              }}
-              onError={() => setImgError(true)} 
+              onError={(e) => {
+                if (e.target.src !== fallbackSrc) {
+                    e.target.src = fallbackSrc;
+                }
+              }} 
             />
-          ) : (
-            <div 
-              className="profile-fallback-icon"
-              style={{ 
-                width: '40px', 
-                height: '40px', 
-                borderRadius: '50%', 
-                background: '#667eea', 
-                color: 'white',
-                display: 'flex',
-                alignItems: 'center', 
-                justifyContent: 'center',
-                fontSize: '20px',
-                fontWeight: 'bold'
-              }}
-            >
-              {fullName.charAt(0).toUpperCase()}
-            </div>
-          )}
-
-          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-            <span style={{ fontSize: '14px', fontWeight: '500' }}>{fullName}</span>
-            <span className="role-badge" style={{ fontSize: '11px', color: '#666', textTransform: 'capitalize' }}>
-                {user?.role_name || 'Admin'}
-            </span>
+            <span className="status-indicator"></span>
           </div>
         </div>
+
       </div>
     </header>
   );

@@ -196,3 +196,76 @@ div:where(.swal2-container) button:where(.swal2-styled):hover {
 .swal-danger-btn {
   background-color: #EF4444 !important; /* Red for Delete */
 }
+
+
+
+
+/* =========================================
+   MODERN BUTTON STYLES
+   ========================================= */
+
+/* ប៊ូតុង Cancel */
+.btn-modern-cancel {
+  background-color: #ffffff;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-modern-cancel:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+  border-color: #94a3b8;
+}
+
+/* ប៊ូតុង Create (Gradient & Shadow) */
+.btn-modern-create {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); /* Gradient Indigo */
+  color: white;
+  border: none;
+  padding: 10px 32px; /* ធ្វើឱ្យវែងបន្តិច */
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4); /* ស្រមោលពណ៌ស្វាយ */
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-modern-create:hover {
+  transform: translateY(-2px); /* ងើបឡើងលើបន្តិចពេល Hover */
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+}
+
+.btn-modern-create:active {
+  transform: translateY(0);
+}
+
+/* ពេលកំពុង Loading (Disabled) */
+.btn-modern-create:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading Spinner វិលៗ */
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

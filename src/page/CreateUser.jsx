@@ -540,12 +540,51 @@ const CreateUser = () => {
             </>
           )}
 
-          <div className="form-section"><h3>Profile Image</h3><div className="form-group"><input type="file" name="profile_image" onChange={handleFileChange} accept="image/*" /></div></div>
+          <div className="form-section">
+  <h3>Profile Image</h3>
+  <div className="form-group">
+    <input 
+      type="file" 
+      name="profile_image" 
+      onChange={handleFileChange} 
+      accept="image/*" 
+    />
+  </div>
+</div>
 
-          <div className="form-actions">
-            <button type="button" className="btn-cancel" onClick={() => navigate(-1)}>Cancel</button>
-            <button type="submit" className="btn-submit" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</button>
-          </div>
+{/* ✅ ដាក់ style ឱ្យប៊ូតុងនៅខាងស្តាំ និងមានគម្លាត */}
+<div className="form-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '24px' }}>
+  
+  {/* 1. ប៊ូតុង Cancel */}
+  <button 
+    type="button" 
+    className="btn-modern-cancel" 
+    onClick={() => navigate(-1)}
+    disabled={loading}
+  >
+    Cancel
+  </button>
+
+  {/* 2. ប៊ូតុង Submit (Create) */}
+  <button 
+    type="submit" 
+    className="btn-modern-create" 
+    disabled={loading}
+  >
+    {loading ? (
+      <>
+        {/* ✅ ប្រើ Class spinner-small ដែលបងបានបង្កើត */}
+        <span className="spinner-small"></span> Creating...
+      </>
+    ) : (
+      <>
+        {/* បងអាចដាក់ Icon ថែមបានបើចង់ */}
+        Create Account
+      </>
+    )}
+  </button>
+</div>
+
         </form>
       )}
     </div>

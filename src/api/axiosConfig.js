@@ -1,8 +1,11 @@
 // import axios from 'axios';
 
-// // ✅ កែត្រង់នេះ៖ ប្រើ VITE_API_URL (អត់មាន BASE)
-// // ហើយដក /api/v1 ចេញ (ព្រោះ Server បងអត់មាន Route v1 ទេ)
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// // ❌ លុបកូដចាស់នេះចោល៖
+// // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+// // ✅ ដាក់កូដថ្មីនេះ (ដាក់តែប៉ុណ្ណេះគឺដើរទាំង Local ទាំង Server):
+// // ហេតុផល៖ ពេលនៅ Local (Vite Proxy) ឬ Server (Nginx/Express) វាចាប់យក Domain ស្វ័យប្រវត្តិ
+// const API_URL = '/api/v1'; 
 
 // const api = axios.create({
 //   baseURL: API_URL,
@@ -12,10 +15,7 @@
 // // --- Request Interceptor (ទុកដដែល) ---
 // api.interceptors.request.use(
 //   (config) => {
-//     // ពិនិត្យមើលថាបង Save Token ឈ្មោះអី? accessToken ឬ token?
-//     // បើក្នុង Login.jsx ដាក់ localStorage.setItem('token', ...) ខាងក្រោមនេះត្រូវដាក់ 'token' ដែរ
 //     const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('token');
-    
 //     if (accessToken) {
 //       config.headers.Authorization = `Bearer ${accessToken}`;
 //     }
@@ -42,22 +42,22 @@
 
 import axios from 'axios';
 
-// ❌ លុបកូដចាស់នេះចោល៖
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
-// ✅ ដាក់កូដថ្មីនេះ (ដាក់តែប៉ុណ្ណេះគឺដើរទាំង Local ទាំង Server):
-// ហេតុផល៖ ពេលនៅ Local (Vite Proxy) ឬ Server (Nginx/Express) វាចាប់យក Domain ស្វ័យប្រវត្តិ
-const API_URL = '/api/v1'; 
+// ✅ DYNAMIC URL:
+// 1. Checks if VITE_API_URL is set (Production/Server/CI-CD)
+// 2. If not set, falls back to 'http://localhost:3000/api/v1' (Local Development)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  withCredentials: true, // Important for cookies/sessions
 });
 
-// --- Request Interceptor (ទុកដដែល) ---
+// --- Request Interceptor (Attaches Token) ---
 api.interceptors.request.use(
   (config) => {
+    // Check your local storage key name (accessToken vs token)
     const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('token');
+    
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -66,14 +66,18 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// --- Response Interceptor (ទុកដដែល) ---
+// --- Response Interceptor (Handles Errors) ---
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    
+    // If 401 Unauthorized (Token expired), prevents infinite loop
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      // TODO: Handle token refresh logic here
+      
+      // Optional: Add logic here to refresh token or redirect to login
+      // window.location.href = '/login'; 
     }
     return Promise.reject(error);
   }

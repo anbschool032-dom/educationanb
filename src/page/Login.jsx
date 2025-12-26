@@ -1,210 +1,222 @@
-  // import React, { useState } from 'react';
-  // import { useAuth } from '../hooks/useAuth';
-  // import { Navigate } from 'react-router-dom';
-  // import 'bootstrap-icons/font/bootstrap-icons.css';
+//  import React, { useState } from 'react';
+// import { useAuth } from '../hooks/useAuth';
+// import { Navigate } from 'react-router-dom';
+// import 'bootstrap-icons/font/bootstrap-icons.css';
+// import Swal from 'sweetalert2'; // ✅ 1. Import SweetAlert2
 
-  // const AdminLogin = () => {
-  //   const [email, setEmail] = useState('');
-  //   const [password, setPassword] = useState('');
-  //   const [remember, setRemember] = useState(false);
-  //   const [error, setError] = useState(null);
-  //   const [submitting, setSubmitting] = useState(false);
-  //   const [showPassword, setShowPassword] = useState(false); // 👈 EYE TOGGLE
+// const AdminLogin = () => {
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [remember, setRemember] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [submitting, setSubmitting] = useState(false);
+//   const [showPassword, setShowPassword] = useState(false);
 
-  //   const { login, isAuthenticated, role, loading } = useAuth();
+//   const { login, isAuthenticated, role, loading } = useAuth();
 
-  //   if (!loading && isAuthenticated && role === 'admin') {
-  //     return <Navigate to="/" replace />;
-  //   }
+//   // Redirect if already logged in
+//   if (!loading && isAuthenticated && role === 'admin') {
+//     return <Navigate to="/" replace />;
+//   }
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     setError(null);
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError(null);
 
-  //     if (!email.trim() || !password.trim()) {
-  //       setError('Email and password are required.');
-  //       return;
-  //     }
+//     if (!email.trim() || !password.trim()) {
+//       setError('Email and password are required.');
+//       return;
+//     }
 
-  //     setSubmitting(true);
+//     setSubmitting(true);
 
-  //     try {
-  //       const user = await login(email, password, remember);
-  //       if (user.role_name !== 'admin') {
-  //         setError('You do not have admin access.');
-  //       }
-  //     } catch (err) {
-  //       const message =
-  //         err.response?.data?.message || err.message || 'Login failed.';
-  //       setError(message);
-  //     } finally {
-  //       setSubmitting(false);
-  //     }
-  //   };
+//     try {
+//       const user = await login(email, password, remember);
+      
+//       if (user.role_name !== 'admin') {
+//         setError('You do not have admin access.');
+//       } else {
+//         // ✅ 2. បង្ហាញ Alert Success ពេល Login ជោគជ័យ
+//         // វាល្អបំផុតសម្រាប់តេស្ត CI/CD ដើម្បីដឹងថា Deployment ថ្មីដើរ
+//         Swal.fire({
+//           icon: 'success',
+//           title: 'Login Success!',
+//           text: 'Welcome to Admin Portal 🚀',
+//           timer: 2000,
+//           showConfirmButton: false,
+//           background: '#fff',
+//           iconColor: '#4F46E5'
+//         });
+//       }
 
-  // return (
-  //   <div
-  //     className="min-vh-100 d-flex align-items-center justify-content-center"
-  //     style={{
-  //       background:
-  //         "linear-gradient(135deg, #667eea, #764ba2, #4facfe, #38f9d7)",
-  //       backgroundSize: "400% 400%",
-  //       animation: "gradientBG 8s ease infinite",
-  //     }}
-  //   >
-  //     <style>
-  //       {`
-  //         @keyframes gradientBG {
-  //           0% { background-position: 0% 50%; }
-  //           50% { background-position: 100% 50%; }
-  //           100% { background-position: 0% 50%; }
-  //         }
+//     } catch (err) {
+//       const message =
+//         err.response?.data?.message || err.message || 'Login failed.';
+//       setError(message);
+//     } finally {
+//       setSubmitting(false);
+//     }
+//   };
 
-  //         .glass-card {
-  //           backdrop-filter: blur(15px);
-  //           background: rgba(255,255,255,0.9);
-  //           transition: transform .3s ease, box-shadow .3s ease;
-  //         }
+//   return (
+//     <div
+//       className="min-vh-100 d-flex align-items-center justify-content-center"
+//       style={{
+//         background:
+//           "linear-gradient(135deg, #667eea, #764ba2, #4facfe, #38f9d7)",
+//         backgroundSize: "400% 400%",
+//         animation: "gradientBG 8s ease infinite",
+//       }}
+//     >
+//       <style>
+//         {`
+//           @keyframes gradientBG {
+//             0% { background-position: 0% 50%; }
+//             50% { background-position: 100% 50%; }
+//             100% { background-position: 0% 50%; }
+//           }
 
-  //         .glass-card:hover {
-  //           transform: translateY(-5px);
-  //           box-shadow: 0 30px 50px rgba(0,0,0,0.15);
-  //         }
+//           .glass-card {
+//             backdrop-filter: blur(15px);
+//             background: rgba(255,255,255,0.9);
+//             transition: transform .3s ease, box-shadow .3s ease;
+//           }
 
-  //         .gradient-btn {
-  //           background: linear-gradient(90deg,#4F46E5,#7C3AED);
-  //           border: none;
-  //         }
+//           .glass-card:hover {
+//             transform: translateY(-5px);
+//             box-shadow: 0 30px 50px rgba(0,0,0,0.15);
+//           }
 
-  //         .gradient-btn:hover {
-  //           opacity: .95;
-  //         }
-  //       `}
-  //     </style>
+//           .gradient-btn {
+//             background: linear-gradient(90deg,#4F46E5,#7C3AED);
+//             border: none;
+//           }
 
-  //     <div
-  //       className="card p-4 shadow-lg border-0 rounded-4 glass-card"
-  //       style={{ width: "440px" }}
-  //     >
-  //       {/* LOGO */}
-  //       <div className="text-center mb-3">
-  //         <img
-  //           src="/logo.svg"
-  //           alt="Logo"
-  //           style={{ width: "85px", height: "85px" }}
-  //         />
-  //       </div>
+//           .gradient-btn:hover {
+//             opacity: .95;
+//           }
+//         `}
+//       </style>
 
-  //       <h3 className="text-center fw-bold mb-1">Admin Portal</h3>
-  //       <p className="text-center text-muted mb-4">
-  //         Sign in to manage CareerSync dashboard
-  //       </p>
+//       <div
+//         className="card p-4 shadow-lg border-0 rounded-4 glass-card"
+//         style={{ width: "440px" }}
+//       >
+//         {/* LOGO */}
+//         <div className="text-center mb-3">
+//           <img
+//             src="/logo.svg"
+//             alt="Logo"
+//             style={{ width: "85px", height: "85px" }}
+//           />
+//         </div>
 
-  //       {error && (
-  //         <div className="alert alert-danger" role="alert">
-  //           {error}
-  //         </div>
-  //       )}
+//         <h3 className="text-center fw-bold mb-1">Admin Portal</h3>
+//         <p className="text-center text-muted mb-4">
+//           Sign in to manage CareerSync dashboard
+//         </p>
 
-  //       <form onSubmit={handleSubmit}>
-  //         {/* EMAIL */}
-  //         <div className="mb-3">
-  //           <label className="form-label fw-semibold">Email Address</label>
-  //           <div className="input-group input-group-lg">
-  //             <span className="input-group-text">
-  //               <i className="bi bi-envelope"></i>
-  //             </span>
-  //             <input
-  //               type="email"
-  //               className="form-control"
-  //               placeholder="admin@example.com"
-  //               value={email}
-  //               onChange={(e) => setEmail(e.target.value)}
-  //               required
-  //             />
-  //           </div>
-  //         </div>
+//         {error && (
+//           <div className="alert alert-danger" role="alert">
+//             {error}
+//           </div>
+//         )}
 
-  //         {/* PASSWORD */}
-  //         <div className="mb-3">
-  //           <label className="form-label fw-semibold">Password</label>
-  //           <div className="input-group input-group-lg">
-  //             <span className="input-group-text">
-  //               <i className="bi bi-lock"></i>
-  //             </span>
+//         <form onSubmit={handleSubmit}>
+//           {/* EMAIL */}
+//           <div className="mb-3">
+//             <label className="form-label fw-semibold">Email Address</label>
+//             <div className="input-group input-group-lg">
+//               <span className="input-group-text">
+//                 <i className="bi bi-envelope"></i>
+//               </span>
+//               <input
+//                 type="email"
+//                 className="form-control"
+//                 placeholder="admin@example.com"
+//                 value={email}
+//                 onChange={(e) => setEmail(e.target.value)}
+//                 required
+//               />
+//             </div>
+//           </div>
 
-  //             <input
-  //               type={showPassword ? "text" : "password"}
-  //               className="form-control"
-  //               placeholder="••••••••"
-  //               value={password}
-  //               onChange={(e) => setPassword(e.target.value)}
-  //               required
-  //             />
+//           {/* PASSWORD */}
+//           <div className="mb-3">
+//             <label className="form-label fw-semibold">Password</label>
+//             <div className="input-group input-group-lg">
+//               <span className="input-group-text">
+//                 <i className="bi bi-lock"></i>
+//               </span>
 
-  //             <span
-  //               className="input-group-text"
-  //               style={{ cursor: "pointer" }}
-  //               onClick={() => setShowPassword(!showPassword)}
-  //             >
-  //               {showPassword ? (
-  //                 <i className="bi bi-eye-slash"></i>
-  //               ) : (
-  //                 <i className="bi bi-eye"></i>
-  //               )}
-  //             </span>
-  //           </div>
-  //         </div>
+//               <input
+//                 type={showPassword ? "text" : "password"}
+//                 className="form-control"
+//                 placeholder="••••••••"
+//                 value={password}
+//                 onChange={(e) => setPassword(e.target.value)}
+//                 required
+//               />
 
-  //         {/* REMEMBER + FORGOT */}
-  //         <div className="d-flex justify-content-between align-items-center mb-3">
-  //           <div className="form-check">
-  //             <input
-  //               className="form-check-input"
-  //               type="checkbox"
-  //               id="remember"
-  //               checked={remember}
-  //               onChange={(e) => setRemember(e.target.checked)}
-  //             />
-  //             <label className="form-check-label" htmlFor="remember">
-  //               Remember me
-  //             </label>
-  //           </div>
+//               <span
+//                 className="input-group-text"
+//                 style={{ cursor: "pointer" }}
+//                 onClick={() => setShowPassword(!showPassword)}
+//               >
+//                 {showPassword ? (
+//                   <i className="bi bi-eye-slash"></i>
+//                 ) : (
+//                   <i className="bi bi-eye"></i>
+//                 )}
+//               </span>
+//             </div>
+//           </div>
 
-  //           <a href="#" className="small text-primary text-decoration-none">
-  //             Forgot password?
-  //           </a>
-  //         </div>
+//           {/* REMEMBER + FORGOT */}
+//           <div className="d-flex justify-content-between align-items-center mb-3">
+//             <div className="form-check">
+//               <input
+//                 className="form-check-input"
+//                 type="checkbox"
+//                 id="remember"
+//                 checked={remember}
+//                 onChange={(e) => setRemember(e.target.checked)}
+//               />
+//               <label className="form-check-label" htmlFor="remember">
+//                 Remember me
+//               </label>
+//             </div>
 
-  //         {/* BUTTON */}
-  //         <button
-  //           type="submit"
-  //           disabled={submitting}
-  //           className="btn gradient-btn text-white w-100 btn-lg rounded-3 shadow-sm"
-  //         >
-  //           {submitting ? "Signing in…" : "Sign In"}
-  //         </button>
-  //       </form>
+//             {/* <a href="#" className="small text-primary text-decoration-none">
+//               Forgot password?
+//             </a> */}
+//           </div>
 
-  //       <p className="text-center text-muted mt-4 small mb-0">
-  //         © 2025 CareerSync — Admin Panel
-  //       </p>
-  //     </div>
-  //   </div>
-  // );
+//           {/* BUTTON */}
+//           <button
+//             type="submit"
+//             disabled={submitting}
+//             className="btn gradient-btn text-white w-100 btn-lg rounded-3 shadow-sm"
+//           >
+//             {submitting ? "Signing in…" : "Sign In"}
+//           </button>
+//         </form>
 
-  // };
+//         <p className="text-center text-muted mt-4 small mb-0">
+//           © 2025 CareerSync — Admin Panel
+//         </p>
+//       </div>
+//     </div>
+//   );
+// };
 
-  // export default AdminLogin;
+// export default AdminLogin;
 
-
-
-
-  import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Swal from 'sweetalert2'; // ✅ 1. Import SweetAlert2
+import Swal from 'sweetalert2';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -216,7 +228,7 @@ const AdminLogin = () => {
 
   const { login, isAuthenticated, role, loading } = useAuth();
 
-  // Redirect if already logged in
+  // Redirect if already logged in as Admin
   if (!loading && isAuthenticated && role === 'admin') {
     return <Navigate to="/" replace />;
   }
@@ -225,8 +237,16 @@ const AdminLogin = () => {
     e.preventDefault();
     setError(null);
 
+    // 1. Check for Empty Fields
     if (!email.trim() || !password.trim()) {
-      setError('Email and password are required.');
+      const msg = 'Email and password are required.';
+      setError(msg);
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing Info',
+        text: msg,
+        confirmButtonColor: '#f59e0b'
+      });
       return;
     }
 
@@ -235,11 +255,18 @@ const AdminLogin = () => {
     try {
       const user = await login(email, password, remember);
       
+      // 2. Check if user is actually an Admin
       if (user.role_name !== 'admin') {
-        setError('You do not have admin access.');
+        const msg = 'You do not have admin access.';
+        setError(msg);
+        Swal.fire({
+          icon: 'error',
+          title: 'Access Denied',
+          text: msg,
+          confirmButtonColor: '#ef4444'
+        });
       } else {
-        // ✅ 2. បង្ហាញ Alert Success ពេល Login ជោគជ័យ
-        // វាល្អបំផុតសម្រាប់តេស្ត CI/CD ដើម្បីដឹងថា Deployment ថ្មីដើរ
+        // 3. Login Success
         Swal.fire({
           icon: 'success',
           title: 'Login Success!',
@@ -252,9 +279,19 @@ const AdminLogin = () => {
       }
 
     } catch (err) {
+      // 4. Handle Errors (User not found, Incorrect password, Server error)
       const message =
         err.response?.data?.message || err.message || 'Login failed.';
+      
       setError(message);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: message, // Displays specific error from Backend
+        confirmButtonColor: '#ef4444',
+        background: '#fff'
+      });
     } finally {
       setSubmitting(false);
     }
@@ -277,25 +314,25 @@ const AdminLogin = () => {
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
           }
-
           .glass-card {
             backdrop-filter: blur(15px);
             background: rgba(255,255,255,0.9);
             transition: transform .3s ease, box-shadow .3s ease;
           }
-
           .glass-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 30px 50px rgba(0,0,0,0.15);
           }
-
           .gradient-btn {
             background: linear-gradient(90deg,#4F46E5,#7C3AED);
             border: none;
           }
-
           .gradient-btn:hover {
             opacity: .95;
+          }
+          .forgot-link:hover {
+            color: #4F46E5 !important;
+            text-decoration: underline !important;
           }
         `}
       </style>
@@ -304,7 +341,6 @@ const AdminLogin = () => {
         className="card p-4 shadow-lg border-0 rounded-4 glass-card"
         style={{ width: "440px" }}
       >
-        {/* LOGO */}
         <div className="text-center mb-3">
           <img
             src="/logo.svg"
@@ -319,7 +355,8 @@ const AdminLogin = () => {
         </p>
 
         {error && (
-          <div className="alert alert-danger" role="alert">
+          <div className="alert alert-danger text-center" role="alert">
+            <i className="bi bi-exclamation-triangle-fill me-2"></i>
             {error}
           </div>
         )}
@@ -374,7 +411,7 @@ const AdminLogin = () => {
             </div>
           </div>
 
-          {/* REMEMBER + FORGOT */}
+          {/* REMEMBER + FORGOT PASSWORD */}
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="form-check">
               <input
@@ -389,9 +426,13 @@ const AdminLogin = () => {
               </label>
             </div>
 
-            {/* <a href="#" className="small text-primary text-decoration-none">
+            <Link 
+              to="/forgot-password" 
+              className="small text-primary text-decoration-none fw-semibold forgot-link"
+              style={{ transition: '0.3s' }}
+            >
               Forgot password?
-            </a> */}
+            </Link>
           </div>
 
           {/* BUTTON */}
