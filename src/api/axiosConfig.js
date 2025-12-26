@@ -40,24 +40,23 @@
 // export default api;
 
 
+
 import axios from 'axios';
 
-// ✅ DYNAMIC URL:
-// 1. Checks if VITE_API_URL is set (Production/Server/CI-CD)
-// 2. If not set, falls back to 'http://localhost:3000/api/v1' (Local Development)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+// ✅ ដាក់កូដនេះវិញ (ខ្លី តែខ្លឹម):
+// ដោយសារយើងបាន Setup Proxy ក្នុង vite.config.js ហើយ
+// យើងគ្រាន់តែហៅ '/api/v1' គឺវាដើរគ្រប់កន្លែង (Local & Server)
+const API_URL = '/api/v1'; 
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Important for cookies/sessions
+  withCredentials: true, 
 });
 
-// --- Request Interceptor (Attaches Token) ---
+// --- Request Interceptor ---
 api.interceptors.request.use(
   (config) => {
-    // Check your local storage key name (accessToken vs token)
     const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('token');
-    
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -66,18 +65,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// --- Response Interceptor (Handles Errors) ---
+// --- Response Interceptor ---
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
-    // If 401 Unauthorized (Token expired), prevents infinite loop
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
-      // Optional: Add logic here to refresh token or redirect to login
-      // window.location.href = '/login'; 
+      // Handle logout or refresh here
     }
     return Promise.reject(error);
   }
