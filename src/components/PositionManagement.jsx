@@ -1,13 +1,11 @@
-// src/pages/PositionManagement.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../api/axiosConfig'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/css/components/positionmanagement.css';
 import Swal from 'sweetalert2'; 
 
-// ✅ FIX: ប្រើ Environment Variable ជំនួសឱ្យ localhost
-// (ត្រូវប្រាកដថាបងមាន VITE_API_URL ក្នុង .env ទាំង Local និង Server)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// ✅ FIX: ប្រើ Relative Path ដើម្បីកុំឱ្យជាប់ Mixed Content Error (HTTPS)
+const API_URL = ''; 
 
 const PositionManagement = () => {
   const [activeTab, setActiveTab] = useState('position');
@@ -15,22 +13,18 @@ const PositionManagement = () => {
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // View Modal state
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState(null);
 
-  // Industry form state
   const [showIndustryForm, setShowIndustryForm] = useState(false);
   const [industryFormData, setIndustryFormData] = useState({
     id: null,
     industry_name: '',
   });
 
-  // Position form state
   const [showPositionForm, setShowPositionForm] = useState(false);
   const [positionFormData, setPositionFormData] = useState({
     id: null,
@@ -45,7 +39,6 @@ const PositionManagement = () => {
     fetchPositions();
   }, []);
 
-  // --- Fetch Data ---
   const fetchIndustries = async () => {
     try {
       setLoading(true);
@@ -70,7 +63,6 @@ const PositionManagement = () => {
     }
   };
 
-  // --- View Detail Handler ---
   const handleViewPosition = (position) => {
     setSelectedPosition(position);
     setShowViewModal(true);
@@ -81,7 +73,6 @@ const PositionManagement = () => {
     setSelectedPosition(null);
   };
 
-  // --- Industry Handlers ---
   const handleAddIndustry = () => {
     setIndustryFormData({ id: null, industry_name: '' });
     setShowIndustryForm(true);
@@ -136,7 +127,6 @@ const PositionManagement = () => {
     }
   };
 
-  // --- Position Handlers ---
   const handleAddPosition = () => {
     setPositionFormData({
       id: null,
@@ -229,6 +219,7 @@ const PositionManagement = () => {
     if (positionFormData.image_position instanceof File) {
       src = URL.createObjectURL(positionFormData.image_position);
     } else {
+      // ✅ ប្រើ Relative Path
       src = `${API_URL}/uploads/positions/${positionFormData.image_position}`;
     }
     return (
@@ -238,7 +229,6 @@ const PositionManagement = () => {
     );
   };
 
-  // --- Pagination Logic ---
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentPositions = positions.slice(indexOfFirst, indexOfLast);
@@ -248,7 +238,6 @@ const PositionManagement = () => {
 
   return (
     <div className="position-management-container">
-      {/* Tabs */}
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
           <button className={`nav-link ${activeTab === 'position' ? 'active' : ''}`} onClick={() => setActiveTab('position')}>
@@ -267,7 +256,6 @@ const PositionManagement = () => {
         </li>
       </ul>
 
-      {/* --- Tab 1: View Positions --- */}
       {activeTab === 'position' && (
         <div className="card p-4 mb-4 shadow-sm">
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -297,6 +285,7 @@ const PositionManagement = () => {
                         <td>
                           {p.image_position ? (
                             <img 
+                              // ✅ ប្រើ Relative Path
                               src={`${API_URL}/uploads/positions/${p.image_position}`} 
                               alt={p.position_name}
                               style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #dee2e6' }}
@@ -307,7 +296,6 @@ const PositionManagement = () => {
                         <td className="fw-bold text-dark">{p.position_name}</td>
                         <td><span className="badge bg-light text-dark border">{p.industry}</span></td>
                         <td>
-                          {/* ✅ View Button Added */}
                           <button className="btn btn-sm btn-info text-white me-2" onClick={() => handleViewPosition(p)} title="View Detail">
                              👁️ 
                           </button>
@@ -327,7 +315,6 @@ const PositionManagement = () => {
                 </table>
               </div>
 
-              {/* ✅ Pagination Controls */}
               {totalPages > 1 && (
                 <nav className="d-flex justify-content-center mt-4">
                   <ul className="pagination">
@@ -350,7 +337,6 @@ const PositionManagement = () => {
         </div>
       )}
 
-      {/* --- Tab 2: Manage Industries --- */}
       {activeTab === 'industry' && (
         <div className="card p-4 mb-4 shadow-sm">
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -401,7 +387,6 @@ const PositionManagement = () => {
         </div>
       )}
 
-      {/* --- Tab 3: Create/Update Position --- */}
       {activeTab === 'create-position' && (
         <div className="card p-4 mb-4 shadow-sm">
           <h3 className="mb-4">{positionFormData.id ? 'Edit Position' : 'Add New Position'}</h3>
@@ -436,12 +421,9 @@ const PositionManagement = () => {
         </div>
       )}
 
-      {/* ✅ View Detail Modal (Popup) */}
       {showViewModal && selectedPosition && (
         <>
-            {/* Modal Backdrop (Click to close) */}
             <div className="modal-backdrop fade show" onClick={closeViewModal}></div>
-            
             <div className="modal fade show d-block" tabIndex="-1">
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
@@ -453,6 +435,7 @@ const PositionManagement = () => {
                     <div className="text-center mb-4">
                     {selectedPosition.image_position ? (
                         <img 
+                        // ✅ ប្រើ Relative Path
                         src={`${API_URL}/uploads/positions/${selectedPosition.image_position}`} 
                         alt={selectedPosition.position_name}
                         className="img-fluid rounded shadow-sm"
@@ -485,7 +468,6 @@ const PositionManagement = () => {
             </div>
         </>
       )}
-
     </div>
   );
 };
