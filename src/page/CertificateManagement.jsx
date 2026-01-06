@@ -68,8 +68,8 @@ const CertificateManagement = () => {
     <div className="main-content p-4">
       <div className="d-flex justify-content-between align-items-center mb-4 no-print">
         <div>
-          {/* <h2 className="header-title">Certificate Management</h2> */}
-          <h2 className="header-title">Hello ci/cd </h2>
+          <h2 className="header-title">Certificate Management</h2>
+          {/* <h2 className="header-title">Hello ci/cd </h2> */}
           <p className="text-muted">Manage and issue certificates for students and employees</p>
         </div>
         <div className="d-flex gap-2">
